@@ -3,3 +3,5 @@ dist/
 build/
 out/
 *.tsbuildinfo
+node_modules/
+google.txt

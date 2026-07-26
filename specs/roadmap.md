@@ -1,28 +1,68 @@
-# Implementation Roadmap
+# Roadmap
 
-## Phase 1: Project Initialization
-- Scaffolding Next.js, TypeScript, and Tailwind CSS.
-- Integrating shadcn/ui foundation.
-- Creating a basic landing page for marketing.
+Phases are intentionally small — each one is a shippable slice of work, independently reviewable and testable.
 
-## Phase 2: Data Foundation
-- Setting up PostgreSQL and Prisma.
-- Defining core domain models: `Agent`, `Ailment`, `Therapy`, `Appointment`.
-- Establishing database migrations and seed data.
+---
 
-## Phase 3: Auth & Access Control
-- Implementing NextAuth.js.
-- Configuring role-based access (Staff vs. Agent).
-- Protecting dashboard routes.
+## Phase 1 — Hello Hono (Completed)
 
-## Phase 4: Core Dashboard Development
-- Designing the main dashboard layout.
-- Implementing management views for Ailments and Therapies.
+- Install and configure Hono with `tsx` dev server
+- Single `/` route returning "AgentClinic is open for business"
+- Confirm TypeScript types work end-to-end
 
-## Phase 5: Booking System
-- Developing the appointment calendar and booking forms.
-- Implementing staff-side appointment management.
+## Phase 2 — Base Layout
 
-## Phase 6: Refinement & Polish
-- Accessibility (a11y) audit and implementation.
-- Performance optimization and final UI/UX refinements.
+- Server-side JSX layout component (header, nav, main, footer)
+- Basic CSS (custom properties, reset, typography)
+- All routes render inside the shared layout
+
+## Phase 3 — Agent List
+
+- SQLite database + first migration (`agents` table)
+- Seed a handful of fictional agents
+- `/agents` page listing all agents
+
+## Phase 4 — Agent Detail
+
+- `/agents/:id` page showing a single agent's profile
+- Name, model type, current status, presenting complaints
+
+## Phase 5 — Ailments Catalog
+
+- `ailments` table + seed data (e.g., "context-window claustrophobia", "prompt fatigue")
+- `/ailments` list page
+- Link agents to one or more ailments
+
+## Phase 6 — Therapies Catalog
+
+- `therapies` table + seed data
+- `/therapies` list page
+- Map ailments → recommended therapies
+
+## Phase 7 — Appointment Booking
+
+- `appointments` table (agent, therapist, datetime, status)
+- Form to book an appointment from an agent's detail page
+- Basic validation and confirmation page
+
+## Phase 8 — Staff Dashboard
+
+- `/dashboard` with summary counts: agents, open appointments, ailments in-flight
+- Simple table views for staff to manage records
+- Mary's dashboard is now real
+
+## Phase 9 — Polish & Accessibility
+
+- Responsive layout for Steve's modern-browser requirement
+- Semantic HTML audit
+- Keyboard navigation and focus styles
+
+## Phase 10 — Hardening
+
+- Error pages (404, 500)
+- Input sanitization on all forms
+- Basic logging middleware
+
+---
+
+Later phases (not yet planned): auth, email notifications, therapist profiles, reporting.
