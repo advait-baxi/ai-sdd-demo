@@ -10,7 +10,7 @@ AgentClinic is a server-side TypeScript application. All rendering happens on th
 | Runtime          | Node.js                           | Stable, well-supported, vast ecosystem                                                |
 | Server framework | **Hono**                          | Lightweight, TypeScript-first, fast, excellent DX; routes and middleware feel natural |
 | Templating       | Hono JSX (server-side)            | JSX without React overhead; components are just functions                             |
-| CSS              | Plain CSS + CSS custom properties | No build step required; Steve gets a modern, attractive result                        |
+| CSS              | Plain CSS + CSS custom properties | No build step required; Steve gets a modern, attractive result; mobile-first responsive design                        |
 
 ## Recommended: Hono
 

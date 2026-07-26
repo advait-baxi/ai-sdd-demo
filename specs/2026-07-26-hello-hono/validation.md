@@ -15,4 +15,6 @@ The following criteria must be met before Phase 1 is considered complete and can
     1. Open `src/index.ts`.
     2. Introduce a deliberate type error (e.g., passing a number to a function expecting a string).
 - **Expected Result**: The TypeScript compiler or the `tsx` runtime flags the error, proving that type checking is active and configured correctly.
-- **Clean-up**: Remove the error before final commit.
+## Test Case 4: Responsive Layout (Manual)
+- **Action**: Open the application in a browser and use DevTools to simulate a mobile device (e.g., 375px width).
+- **Expected Result**: The header stacks vertically, and the content fits the screen width without horizontal scrolling.

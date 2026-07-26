@@ -14,6 +14,7 @@ Phases are intentionally small — each one is a shippable slice of work, indepe
 
 - Server-side JSX layout component (header, nav, main, footer)
 - Basic CSS (custom properties, reset, typography)
+- **Mobile-first responsive layout for Steve's modern-browser requirement**
 - All routes render inside the shared layout
 
 ## Phase 3 — Agent List
@@ -53,7 +54,6 @@ Phases are intentionally small — each one is a shippable slice of work, indepe
 
 ## Phase 9 — Polish & Accessibility
 
-- Responsive layout for Steve's modern-browser requirement
 - Semantic HTML audit
 - Keyboard navigation and focus styles
 
