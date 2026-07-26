@@ -6,9 +6,9 @@ The following criteria must be met before Phase 1 is considered complete and can
 - **Action**: Run `npm run dev` in the terminal.
 - **Expected Result**: The server starts without errors, and the console indicates it is listening on the configured port (3000).
 
-## Test Case 2: Root Route Response
-- **Action**: Access `http://localhost:3000/` via a web browser or `curl`.
-- **Expected Result**: The response body is a minimal HTML page containing the text "AgentClinic" and "Open for business".
+## Test Case 2: Root Route Response (Automated)
+- **Action**: Run `npm test`.
+- **Expected Result**: The Vitest suite passes, confirming that the root route returns a 200 OK status and contains the text "AgentClinic" and "Open for business".
 
 ## Test Case 3: End-to-End Type Safety
 - **Action**: 
