@@ -15,3 +15,11 @@ Write a new test suite using the specified testing framework.
 ## Prompt 4
 
 The product's web UI should follow responsive design. Update the product specs and all feature specs to reflect this, as well as any code.
+
+## Prompt 5
+
+I want to keep a CHANGELOG.md in the project root, with headings for dates. If no changelog, examine git commits and add bullets for each date. Then, as we work, we will manually invoke this skill before merging. Help me write a skill for this.
+
+## Prompt 6
+
+I want to write a message for each commit based on file changes. Help me write a skill for this. Skill name should be `commit-message` and should be in YAML format. I will invoke this skill before each commit.
