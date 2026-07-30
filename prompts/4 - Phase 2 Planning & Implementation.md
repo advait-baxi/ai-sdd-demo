@@ -16,13 +16,13 @@ Refer to specs/mission.md and specs/tech-stack.md for guidance.
 
 Important: You _must_ use your AskUserQuestion tool, grouped on these 3, before writing to disk.
 
-## Prompt 3
+## Prompt 2
 
 Update the spec to use PicoCSS.
 
-## Prompt 2
+## Prompt 3
 
-Implement the remaining task groups.
+Implement this feature.
 
 ## Prompt 3
 
