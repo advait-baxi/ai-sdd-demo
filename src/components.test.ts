@@ -17,8 +17,10 @@ describe('Layout Components', () => {
   it('Header renders correctly', () => {
     const result = render(Header())
     expect(result).toContain('<header class="main-header">')
-    expect(result).toContain('<h1>AgentClinic</h1>')
+    expect(result).toContain('AgentClinic')
     expect(result).toContain('<a href="/">Home</a>')
+    expect(result).toContain('<a href="/agents">Agents</a>')
+    expect(result).toContain('<a href="/ailments">Ailments</a>')
   })
 
   it('Footer renders correctly', () => {

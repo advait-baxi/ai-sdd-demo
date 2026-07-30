@@ -10,9 +10,10 @@ export const Layout = (props: { title: string, children: any }) => html`
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>${props.title}</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@picocss/pico@2.0.1/css/pico.min.css">
     <link rel="stylesheet" href="/static/style.css">
   </head>
-  <body>
+  <body class="container">
     ${Header()}
     ${Main(props.children)}
     ${Footer()}
