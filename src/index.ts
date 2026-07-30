@@ -4,7 +4,7 @@ import { Hono } from 'hono'
 import { html } from 'hono/html'
 import { Layout } from './components/Layout'
 
-const app = new Hono()
+export const app = new Hono()
 
 app.use('/static/*', serveStatic({ root: './src' }))
 

@@ -41,5 +41,6 @@ This plan implements Phase 1 of the roadmap: establishing the base server and de
 
 ## Group 7: Final Verification
 21. Execute `npm run dev`.
-22. Verify the server is running and responding correctly via a browser or `curl`.
-23. Verify that `tsc` (or the IDE) reports no type errors.
+22. Run automated tests: `npm test`.
+23. Verify the server is running and responding correctly via a browser or `curl`.
+24. Verify that `tsc` (or the IDE) reports no type errors.
