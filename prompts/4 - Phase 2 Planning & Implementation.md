@@ -24,14 +24,6 @@ Update the spec to use PicoCSS.
 
 Implement this feature.
 
-## Prompt 3
-
-Update specs/YYYY-MM-DD-hello-hono/plan.md and implementation of a main layout component with a header/main/footer as three sub components. Make a CSS file, import it, and link to it.
-
 ## Prompt 4
-
-Update the spec to capture that the header, footer, and main components should be in their own files.
-
-## Prompt 5
 
 Mark this specs/roadmap.md phase as complete, commit this work, switch to development, and merge this branch.
