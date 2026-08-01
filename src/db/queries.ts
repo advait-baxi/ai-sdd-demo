@@ -19,3 +19,19 @@ export function getAilmentsForAgent(agentId: string) {
     WHERE agent_ailments.agent_id = ?
   `).all(agentId) as any[];
 }
+
+export function getAllTherapies() {
+  return db.prepare('SELECT * FROM therapies').all() as any[];
+}
+
+export function getTherapyById(id: string) {
+  return db.prepare('SELECT * FROM therapies WHERE id = ?').get(id) as any;
+}
+
+export function getTherapiesForAilment(ailmentId: string) {
+  return db.prepare(`
+    SELECT therapies.* FROM therapies
+    JOIN ailment_therapies ON therapies.id = ailment_therapies.therapy_id
+    WHERE ailment_therapies.ailment_id = ?
+  `).all(ailmentId) as any[];
+}

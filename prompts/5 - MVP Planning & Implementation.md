@@ -16,3 +16,7 @@ In there:
 Refer to specs/mission.md and specs/tech-stack.md plus the existing feature specs for guidance.
 
 Important: You must use your AskUserQuestion tool, grouped on these 3, before writing to disk.
+
+## Prompt 2
+
+Implement this plan step b step.
