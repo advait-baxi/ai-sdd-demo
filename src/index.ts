@@ -4,7 +4,7 @@ import { Hono } from 'hono'
 import { html } from 'hono/html'
 import { Layout } from './components/Layout'
 import { applyMigrations } from './db/migrations'
-import { getAllAgents, getAgentById, getAllAilments, getAilmentsForAgent, getAllTherapies, getTherapyById, getTherapiesForAilment } from './db/queries'
+import { getAllAgents, getAgentById, getAllAilments, getAilmentsForAgent, getAllTherapies, getTherapyById, getTherapiesForAilment, createAppointment, getAppointmentDetails, getDashboardStats, getAllAppointmentsDetails, updateAppointmentStatus } from './db/queries'
 
 export const app = new Hono()
 
@@ -236,6 +236,130 @@ app.get('/therapies/:id', (c) => {
       `
     })
   )
+})
+
+app.post('/appointments', async (c) => {
+  const body = await c.req.parseBody();
+  const agentId = body.agent_id as string;
+  const therapyId = body.therapy_id as string;
+  const appointmentTime = body.appointment_time as string;
+
+  if (!agentId || !therapyId || !appointmentTime) {
+    return c.text('Missing required fields', 400);
+  }
+
+  const appointmentId = createAppointment(agentId, therapyId, appointmentTime);
+  return c.redirect(`/appointments/${appointmentId}`);
+})
+
+app.get('/appointments/:id', (c) => {
+  const id = c.req.param('id');
+  const appointment = getAppointmentDetails(id);
+
+  if (!appointment) {
+    return c.notFound();
+  }
+
+  return c.html(
+    Layout({
+      title: `AgentClinic - Appointment Confirmation`,
+      children: html`
+        <h1 style="margin-top: 2rem">Appointment Confirmed!</h1>
+        <div class="grid">
+          <article>
+            <h3>Booking Details</h3>
+            <p><strong>Agent:</strong> ${appointment.agent_name}</p>
+            <p><strong>Therapy:</strong> ${appointment.therapy_name} (${appointment.therapy_category})</p>
+            <p><strong>Time:</strong> ${appointment.appointment_time.replace('T', ' ')}</p>
+            <p><strong>Status:</strong> ${appointment.status}</p>
+          </article>
+        </div>
+        <p style="margin-top: 2rem">
+          <a href="/agents/${appointment.agent_id}" role="button" class="outline">Back to Agent Profile</a>
+        </p>
+      `
+    })
+  )
+})
+
+app.get('/dashboard', (c) => {
+  const stats = getDashboardStats();
+  const appointments = getAllAppointmentsDetails();
+
+  return c.html(
+    Layout({
+      title: "AgentClinic - Staff Dashboard",
+      children: html`
+        <h1 style="margin-top: 2rem">Staff Dashboard</h1>
+
+        <div class="grid">
+          <article>
+            <h3>Agents</h3>
+            <p style="font-size: 2rem; margin: 0">${stats.agents}</p>
+          </article>
+          <article>
+            <h3>Ailments</h3>
+            <p style="font-size: 2rem; margin: 0">${stats.ailments}</p>
+          </article>
+          <article>
+            <h3>Appointments</h3>
+            <p style="font-size: 2rem; margin: 0">${stats.appointments}</p>
+          </article>
+        </div>
+
+        <h2 style="margin-top: 2rem">Appointment Management</h2>
+        <table class="striped">
+          <thead>
+            <tr>
+              <th>ID</th>
+              <th>Agent</th>
+              <th>Therapy</th>
+              <th>Time</th>
+              <th>Status</th>
+              <th>Action</th>
+            </tr>
+          </thead>
+          <tbody>
+            ${appointments.map(a => html`
+              <tr>
+                <td>${a.id}</td>
+                <td>${a.agent_name}</td>
+                <td>${a.therapy_name}</td>
+                <td>${a.appointment_time.replace('T', ' ')}</td>
+                <td>${a.status}</td>
+                <td>
+                  <form action="/appointments/${a.id}/status" method="POST" style="display: flex; gap: 0.5rem">
+                    <select name="status" style="width: auto; margin-bottom: 0">
+                      <option value="Scheduled" ${a.status === 'Scheduled' ? 'selected' : ''}>Scheduled</option>
+                      <option value="Completed" ${a.status === 'Completed' ? 'selected' : ''}>Completed</option>
+                      <option value="Cancelled" ${a.status === 'Cancelled' ? 'selected' : ''}>Cancelled</option>
+                    </select>
+                    <button type="submit" class="outline secondary" style="padding: 0 0.5rem; font-size: 0.8rem">Update</button>
+                  </form>
+                </td>
+              </tr>
+            `)}
+            ${appointments.length === 0 ? html`<tr><td colspan="6" style="text-align: center">No appointments scheduled.</td></tr>` : ''}
+          </tbody>
+        </table>
+
+        <p style="margin-top: 2rem"><a href="/" role="button" class="outline">← Back to Home</a></p>
+      `
+    })
+  )
+})
+
+app.post('/appointments/:id/status', async (c) => {
+  const id = c.req.param('id');
+  const body = await c.req.parseBody();
+  const status = body.status as string;
+
+  if (!status) {
+    return c.text('Status is required', 400);
+  }
+
+  updateAppointmentStatus(id, status);
+  return c.redirect('/dashboard');
 })
 
 serve({

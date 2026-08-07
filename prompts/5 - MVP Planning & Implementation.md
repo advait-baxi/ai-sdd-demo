@@ -19,4 +19,16 @@ Important: You must use your AskUserQuestion tool, grouped on these 3, before wr
 
 ## Prompt 2
 
-Implement this plan step b step.
+Implement Step 1: Data Foundation. Refer `2026-07-31-mvp-implementation/plan.md`.
+
+## Prompt 3
+
+Implement Phase 3 — Therapies Catalog. Refer `2026-07-31-mvp-implementation/plan.md`.
+
+## Prompt 4
+
+Implement Phase 4 — Appointment Booking. Refer `2026-07-31-mvp-implementation/plan.md`.
+
+## Prompt 5
+
+Implement Phase 5 — Staff Dashboard. Refer `2026-07-31-mvp-implementation/plan.md`.
