@@ -1,4 +1,4 @@
-# MVP Planning & Implementation
+# Minimum Viable Product (MVP) Planning & Implementation
 
 ## Prompt 1
 
