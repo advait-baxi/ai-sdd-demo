@@ -39,18 +39,18 @@ This plan details the steps to implement Phases 3 through 7 of the AgentClinic r
 
 ### Step 5: Phase 6 — Polish & Accessibility
 
-- [ ] Audit all templates for semantic HTML usage.
-- [ ] Implement global focus styles and keyboard navigation.
-- [ ] Test responsiveness across mobile and desktop viewports.
+- [x] Audit all templates for semantic HTML usage.
+- [x] Implement global focus styles and keyboard navigation.
+- [x] Test responsiveness across mobile and desktop viewports.
 
 ### Step 6: Phase 7 — Hardening
 
-- [ ] Implement custom 404 and 500 error handlers in Hono.
-- [ ] Add input sanitization middleware/utilities for all form inputs.
-- [ ] Integrate basic request/error logging middleware.
+- [x] Implement custom 404 and 500 error handlers in Hono.
+- [x] Add input sanitization middleware/utilities for all form inputs.
+- [x] Integrate basic request/error logging middleware.
 
 ### Step 7: Final Validation
 
-- [ ] Perform full end-to-end walkthrough of the agent-to-therapy-to-dashboard flow.
-- [ ] Run full test suite.
-- [ ] Final sign-off.
+- [x] Perform full end-to-end walkthrough of the agent-to-therapy-to-dashboard flow.
+- [x] Run full test suite.
+- [x] Final sign-off.

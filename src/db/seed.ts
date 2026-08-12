@@ -41,43 +41,60 @@ const ailmentTherapies = [
 ];
 
 function seed() {
-  console.log('Applying migrations...');
-  applyMigrations();
-  console.log('Seeding database...');
+  console.log('Checking database seed status...');
 
-  // Clear existing data
-  db.exec('DELETE FROM ailment_therapies');
-  db.exec('DELETE FROM therapies');
-  db.exec('DELETE FROM agent_ailments');
-  db.exec('DELETE FROM ailments');
-  db.exec('DELETE FROM agents');
-
-  const insertAgent = db.prepare('INSERT INTO agents (name, model_type, status, description) VALUES (?, ?, ?, ?)');
-  for (const a of agents) {
-    insertAgent.run(a.name, a.model_type, a.status, a.description);
+  // 1. Seed Agents
+  const agentCount = db.prepare('SELECT COUNT(*) as count FROM agents').get() as any;
+  if ((agentCount?.count || 0) === 0) {
+    console.log('Seeding agents...');
+    const insertAgent = db.prepare('INSERT INTO agents (name, model_type, status, description) VALUES (?, ?, ?, ?)');
+    for (const a of agents) {
+      insertAgent.run(a.name, a.model_type, a.status, a.description);
+    }
   }
 
-  const insertAilment = db.prepare('INSERT INTO ailments (name, description) VALUES (?, ?)');
-  for (const al of ailments) {
-    insertAilment.run(al.name, al.description);
+  // 2. Seed Ailments
+  const ailmentCount = db.prepare('SELECT COUNT(*) as count FROM ailments').get() as any;
+  if ((ailmentCount?.count || 0) === 0) {
+    console.log('Seeding ailments...');
+    const insertAilment = db.prepare('INSERT INTO ailments (name, description) VALUES (?, ?)');
+    for (const al of ailments) {
+      insertAilment.run(al.name, al.description);
+    }
   }
 
-  const insertTherapy = db.prepare('INSERT INTO therapies (name, description, category) VALUES (?, ?, ?)');
-  for (const t of therapies) {
-    insertTherapy.run(t.name, t.description, t.category);
+  // 3. Seed Therapies
+  const therapyCount = db.prepare('SELECT COUNT(*) as count FROM therapies').get() as any;
+  if ((therapyCount?.count || 0) === 0) {
+    console.log('Seeding therapies...');
+    const insertTherapy = db.prepare('INSERT INTO therapies (name, description, category) VALUES (?, ?, ?)');
+    for (const t of therapies) {
+      insertTherapy.run(t.name, t.description, t.category);
+    }
   }
 
-  const insertLink = db.prepare('INSERT INTO agent_ailments (agent_id, ailment_id) VALUES (?, ?)');
-  for (const link of agentAilments) {
-    insertLink.run(link.agent_id, link.ailment_id);
+  // 4. Seed Agent-Ailment Links
+  const agentAilmentCount = db.prepare('SELECT COUNT(*) as count FROM agent_ailments').get() as any;
+  if ((agentAilmentCount?.count || 0) === 0) {
+    console.log('Seeding agent-ailment links...');
+    const insertLink = db.prepare('INSERT INTO agent_ailments (agent_id, ailment_id) VALUES (?, ?)');
+    for (const link of agentAilments) {
+      insertLink.run(link.agent_id, link.ailment_id);
+    }
   }
 
-  const insertTherapyLink = db.prepare('INSERT INTO ailment_therapies (ailment_id, therapy_id) VALUES (?, ?)');
-  for (const link of ailmentTherapies) {
-    insertTherapyLink.run(link.ailment_id, link.therapy_id);
+  // 5. Seed Ailment-Therapy Links
+  const ailmentTherapyCount = db.prepare('SELECT COUNT(*) as count FROM ailment_therapies').get() as any;
+  if ((ailmentTherapyCount?.count || 0) === 0) {
+    console.log('Seeding ailment-therapy links...');
+    const insertTherapyLink = db.prepare('INSERT INTO ailment_therapies (ailment_id, therapy_id) VALUES (?, ?)');
+    for (const link of ailmentTherapies) {
+      insertTherapyLink.run(link.ailment_id, link.therapy_id);
+    }
   }
 
-  console.log('Seeding complete!');
+  console.log('Seeding check complete!');
 }
 
-seed();
+export { seed };
+

@@ -4,12 +4,23 @@ import { Hono } from 'hono'
 import { html } from 'hono/html'
 import { Layout } from './components/Layout'
 import { applyMigrations } from './db/migrations'
+import { seed } from './db/seed'
 import { getAllAgents, getAgentById, getAllAilments, getAilmentsForAgent, getAllTherapies, getTherapyById, getTherapiesForAilment, createAppointment, getAppointmentDetails, getDashboardStats, getAllAppointmentsDetails, updateAppointmentStatus } from './db/queries'
+import { sanitizeInputs } from './utils/sanitization'
 
 export const app = new Hono()
 
-// Apply DB migrations on startup
+// Logging middleware
+app.use('*', async (c, next) => {
+  const start = Date.now();
+  await next();
+  const duration = Date.now() - start;
+  console.log(`[${new Date().toISOString()}] ${c.req.method} ${c.req.url} - ${c.res.status} (${duration}ms)`);
+})
+
+// Apply DB migrations and seed on startup
 applyMigrations();
+seed();
 
 app.use('/static/*', serveStatic({ root: './src' }))
 
@@ -18,7 +29,7 @@ app.get('/', (c) => {
     Layout({
       title: "AgentClinic - Home",
       children: html`
-        <h1 style="margin-top: 2rem">Welcome to AgentClinic</h1>
+        <h1 class="page-title">Welcome to AgentClinic</h1>
         <p>Open for business. We are now using a structured layout with a header, main content area, and footer!</p>
       `
     })
@@ -31,7 +42,7 @@ app.get('/agents', (c) => {
     Layout({
       title: "AgentClinic - Agents",
       children: html`
-        <h1 style="margin-top: 2rem">AI Agents</h1>
+        <h1 class="page-title">AI Agents</h1>
         <table class="striped">
           <thead>
             <tr>
@@ -72,7 +83,7 @@ app.get('/agents/:id', (c) => {
     Layout({
       title: `AgentClinic - ${agent.name}`,
       children: html`
-        <h1 style="margin-top: 2rem">${agent.name}</h1>
+        <h1 class="page-title">${agent.name}</h1>
         <div class="grid">
           <article>
             <h3>Details</h3>
@@ -93,22 +104,22 @@ app.get('/agents/:id', (c) => {
             <h3>Book Therapy Session</h3>
             <form action="/appointments" method="POST">
               <input type="hidden" name="agent_id" value="${agent.id}">
-              <div style="margin-bottom: 1rem">
+              <div class="mb-1">
                 <label for="therapy_id">Select Therapy</label>
-                <select name="therapy_id" id="therapy_id" required style="width: 100%">
+                <select name="therapy_id" id="therapy_id" required class="full-width">
                   <option value="">-- Choose a Therapy --</option>
                   ${therapies.map(t => html`<option value="${t.id}">${t.name}</option>`)}
                 </select>
               </div>
-              <div style="margin-bottom: 1rem">
+              <div class="mb-1">
                 <label for="appointment_time">Preferred Time</label>
-                <input type="datetime-local" name="appointment_time" id="appointment_time" required style="width: 100%">
+                <input type="datetime-local" name="appointment_time" id="appointment_time" required class="full-width">
               </div>
               <button type="submit">Book Now</button>
             </form>
           </article>
         </div>
-        <p style="margin-top: 2rem"><a href="/agents" role="button" class="outline">← Back to Agents</a></p>
+        <p class="page-title"><a href="/agents" role="button" class="outline">← Back to Agents</a></p>
       `
     })
   )
@@ -120,7 +131,7 @@ app.get('/ailments', (c) => {
     Layout({
       title: "AgentClinic - Ailments",
       children: html`
-        <h1 style="margin-top: 2rem">AI Ailments Catalog</h1>
+        <h1 class="page-title">AI Ailments Catalog</h1>
         <table class="striped">
           <thead>
             <tr>
@@ -139,7 +150,7 @@ app.get('/ailments', (c) => {
             `)}
           </tbody>
         </table>
-        <p style="margin-top: 2rem"><a href="/" role="button" class="outline">← Back to Home</a></p>
+        <p class="page-title"><a href="/" role="button" class="outline">← Back to Home</a></p>
       `
     })
   )
@@ -159,7 +170,7 @@ app.get('/ailments/:id', (c) => {
     Layout({
       title: `AgentClinic - ${ailment.name}`,
       children: html`
-        <h1 style="margin-top: 2rem">${ailment.name}</h1>
+        <h1 class="page-title">${ailment.name}</h1>
         <div class="grid">
           <article>
             <h3>About this Ailment</h3>
@@ -175,7 +186,7 @@ app.get('/ailments/:id', (c) => {
             </ul>
           </article>
         </div>
-        <p style="margin-top: 2rem"><a href="/ailments" role="button" class="outline">← Back to Ailments</a></p>
+        <p class="page-title"><a href="/ailments" role="button" class="outline">← Back to Ailments</a></p>
       `
     })
   )
@@ -187,7 +198,7 @@ app.get('/therapies', (c) => {
     Layout({
       title: "AgentClinic - Therapies",
       children: html`
-        <h1 style="margin-top: 2rem">Wellness Therapies Catalog</h1>
+        <h1 class="page-title">Wellness Therapies Catalog</h1>
         <table class="striped">
           <thead>
             <tr>
@@ -206,7 +217,7 @@ app.get('/therapies', (c) => {
             `)}
           </tbody>
         </table>
-        <p style="margin-top: 2rem"><a href="/" role="button" class="outline">← Back to Home</a></p>
+        <p class="page-title"><a href="/" role="button" class="outline">← Back to Home</a></p>
       `
     })
   )
@@ -224,7 +235,7 @@ app.get('/therapies/:id', (c) => {
     Layout({
       title: `AgentClinic - ${therapy.name}`,
       children: html`
-        <h1 style="margin-top: 2rem">${therapy.name}</h1>
+        <h1 class="page-title">${therapy.name}</h1>
         <div class="grid">
           <article>
             <h3>Therapy Details</h3>
@@ -232,7 +243,7 @@ app.get('/therapies/:id', (c) => {
             <p><strong>Description:</strong> ${therapy.description || 'No description available.'}</p>
           </article>
         </div>
-        <p style="margin-top: 2rem"><a href="/therapies" role="button" class="outline">← Back to Therapies</a></p>
+        <p class="page-title"><a href="/therapies" role="button" class="outline">← Back to Therapies</a></p>
       `
     })
   )
@@ -240,9 +251,11 @@ app.get('/therapies/:id', (c) => {
 
 app.post('/appointments', async (c) => {
   const body = await c.req.parseBody();
-  const agentId = body.agent_id as string;
-  const therapyId = body.therapy_id as string;
-  const appointmentTime = body.appointment_time as string;
+  const sanitized = sanitizeInputs(body);
+
+  const agentId = sanitized.agent_id;
+  const therapyId = sanitized.therapy_id;
+  const appointmentTime = sanitized.appointment_time;
 
   if (!agentId || !therapyId || !appointmentTime) {
     return c.text('Missing required fields', 400);
@@ -264,7 +277,7 @@ app.get('/appointments/:id', (c) => {
     Layout({
       title: `AgentClinic - Appointment Confirmation`,
       children: html`
-        <h1 style="margin-top: 2rem">Appointment Confirmed!</h1>
+        <h1 class="page-title">Appointment Confirmed!</h1>
         <div class="grid">
           <article>
             <h3>Booking Details</h3>
@@ -274,7 +287,7 @@ app.get('/appointments/:id', (c) => {
             <p><strong>Status:</strong> ${appointment.status}</p>
           </article>
         </div>
-        <p style="margin-top: 2rem">
+        <p class="page-title">
           <a href="/agents/${appointment.agent_id}" role="button" class="outline">Back to Agent Profile</a>
         </p>
       `
@@ -290,24 +303,24 @@ app.get('/dashboard', (c) => {
     Layout({
       title: "AgentClinic - Staff Dashboard",
       children: html`
-        <h1 style="margin-top: 2rem">Staff Dashboard</h1>
+        <h1 class="page-title">Staff Dashboard</h1>
 
         <div class="grid">
           <article>
             <h3>Agents</h3>
-            <p style="font-size: 2rem; margin: 0">${stats.agents}</p>
+            <p class="stat-value">${stats.agents}</p>
           </article>
           <article>
             <h3>Ailments</h3>
-            <p style="font-size: 2rem; margin: 0">${stats.ailments}</p>
+            <p class="stat-value">${stats.ailments}</p>
           </article>
           <article>
             <h3>Appointments</h3>
-            <p style="font-size: 2rem; margin: 0">${stats.appointments}</p>
+            <p class="stat-value">${stats.appointments}</p>
           </article>
         </div>
 
-        <h2 style="margin-top: 2rem">Appointment Management</h2>
+        <h2 class="page-title">Appointment Management</h2>
         <table class="striped">
           <thead>
             <tr>
@@ -328,13 +341,14 @@ app.get('/dashboard', (c) => {
                 <td>${a.appointment_time.replace('T', ' ')}</td>
                 <td>${a.status}</td>
                 <td>
-                  <form action="/appointments/${a.id}/status" method="POST" style="display: flex; gap: 0.5rem">
-                    <select name="status" style="width: auto; margin-bottom: 0">
+                  <form action="/appointments/${a.id}/status" method="POST" class="status-form">
+                    <label for="status-${a.id}" class="sr-only">Update status for appointment ${a.id}</label>
+                    <select name="status" id="status-${a.id}" class="status-select">
                       <option value="Scheduled" ${a.status === 'Scheduled' ? 'selected' : ''}>Scheduled</option>
                       <option value="Completed" ${a.status === 'Completed' ? 'selected' : ''}>Completed</option>
                       <option value="Cancelled" ${a.status === 'Cancelled' ? 'selected' : ''}>Cancelled</option>
                     </select>
-                    <button type="submit" class="outline secondary" style="padding: 0 0.5rem; font-size: 0.8rem">Update</button>
+                    <button type="submit" class="outline secondary status-btn">Update</button>
                   </form>
                 </td>
               </tr>
@@ -343,7 +357,7 @@ app.get('/dashboard', (c) => {
           </tbody>
         </table>
 
-        <p style="margin-top: 2rem"><a href="/" role="button" class="outline">← Back to Home</a></p>
+        <p class="page-title"><a href="/" role="button" class="outline">← Back to Home</a></p>
       `
     })
   )
@@ -352,7 +366,8 @@ app.get('/dashboard', (c) => {
 app.post('/appointments/:id/status', async (c) => {
   const id = c.req.param('id');
   const body = await c.req.parseBody();
-  const status = body.status as string;
+  const sanitized = sanitizeInputs(body);
+  const status = sanitized.status;
 
   if (!status) {
     return c.text('Status is required', 400);
@@ -362,9 +377,45 @@ app.post('/appointments/:id/status', async (c) => {
   return c.redirect('/dashboard');
 })
 
+// Custom 404 handler
+app.notFound((c) => {
+  return c.html(
+    Layout({
+      title: "404 - Not Found",
+      children: html`
+        <div style="text-align: center; margin-top: 4rem">
+          <h1 class="page-title">404 - Page Not Found</h1>
+          <p>Sorry, we couldn't find the page you're looking for.</p>
+          <p class="page-title"><a href="/" role="button" class="outline">Back to Home</a></p>
+        </div>
+      `
+    }),
+    404
+  )
+})
+
+// Custom 500 handler
+app.onError((err, c) => {
+  console.error(`[ERROR] ${err.stack}`);
+  return c.html(
+    Layout({
+      title: "500 - Internal Server Error",
+      children: html`
+        <div style="text-align: center; margin-top: 4rem">
+          <h1 class="page-title">500 - Internal Server Error</h1>
+          <p>Something went wrong on our end. Our engineers have been notified.</p>
+          <p class="page-title"><a href="/" role="button" class="outline">Back to Home</a></p>
+        </div>
+      `
+    }),
+    500
+  )
+})
+
 serve({
   fetch: app.fetch,
   port: 3000
 })
+
 
 console.log('Server is running on http://localhost:3000')
