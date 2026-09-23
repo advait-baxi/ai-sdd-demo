@@ -1,3 +1,6 @@
 {
     "showThinkingSummaries": true
+  "hooks": {
+    "PreToolUse": []
+  }
 }
